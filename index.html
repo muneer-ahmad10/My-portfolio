@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muneer Ahmad Dar | AI & ML Engineer Portfolio</title>
+    <style>
+        /* CSS RESET & VARIABLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --bg-color: #0b0b1a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #3b82f6;
+            --secondary: #a855f7;
+            --gradient: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* SCROLL PROGRESS BAR */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--gradient);
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.1s ease-out;
+        }
+
+        /* BACKGROUND ANIMATION CANVAS */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* STICKY NAVBAR WITH GLASS BLUR */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.2rem 10%;
+            background: rgba(11, 11, 26, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--secondary);
+        }
+
+        /* CONTAINER SETUP */
+        section {
+            padding: 100px 10% 80px 10%;
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        /* SCROLL FADE-IN ANIMATION CLASS */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* HERO SECTION */
+        #home {
+            min-height: 100vh;
+            padding-top: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .typing-container {
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            height: 40px;
+        }
+
+        .typing-cursor {
+            font-weight: 100;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* PROMINENT ACHIEVEMENT BADGE */
+        .achievement-highlight {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-left: 4px solid var(--secondary);
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+        }
+
+        .achievement-highlight h4 {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.4rem;
+        }
+
+        .achievement-highlight p {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background: var(--gradient);
+            color: #fff;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: max-content;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+        }
+
+        /* ABOUT & SUMMARY */
+        .summary-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 2.5rem;
+            border-radius: 12px;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .summary-box strong {
+            color: var(--text-main);
+        }
+
+        /* SKILLS SECTION WITH PROGRESS BARS */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .skill-category {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .skill-category h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 0.5rem;
+        }
+
+        .skill-item {
+            margin-bottom: 1.2rem;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+        }
+
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.05);
+            height: 6px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%; /* Loaded dynamically via JS */
+            transition: width 1.5s cubic-bezier(0.1, 1, 0.1, 1);
+        }
+
+        /* PROJECTS SECTION WITH HOVER EFFECTS */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 2rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 10px 30px rgba(11, 11, 26, 0.5);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .project-tag {
+            font-size: 0.75rem;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--primary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .project-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+        }
+
+        .project-bullets {
+            list-style: none;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .project-bullets li {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.6rem;
+            line-height: 1.5;
+        }
+
+        .project-bullets li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+        }
+
+        .project-link {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            width: max-content;
+        }
+
+        .project-link:hover {
+            color: var(--secondary);
+        }
+
+        /* EDUCATION & CERTIFICATIONS */
+        .edu-cert-container {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 3rem;
+        }
+
+        .timeline-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .timeline-badge {
+            font-size: 0.8rem;
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--secondary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-subtitle {
+            font-size: 0.95rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .cert-list {
+            list-style: none;
+        }
+
+        .cert-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.2s ease;
+        }
+
+        .cert-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .cert-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .cert-issuer {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* FOOTER & CONNECT */
+        footer {
+            padding: 4rem 10% 3rem 10%;
+            background: #060610;
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-socials a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-socials a:hover {
+            color: var(--primary);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 968px) {
+            .edu-cert-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 5%;
+            }
+            nav a {
+                margin-left: 1rem;
+                font-size: 0.85rem;
+            }
+            section {
+                padding: 80px 5% 60px 5%;
+            }
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .typing-container {
+                font-size: 1.4rem;
+            }
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCROLL PROGRESS BAR -->
+    <div id="scroll-progress"></div>
+
+    <!-- BACKGROUND ANIMATION CANVAS -->
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- STICKY NAVBAR -->
+    <header>
+        <div class="logo">MUNEER AHMAD DAR</div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#education">Education</a>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home">
+        <div class="fade-in-element">
+            <h1 class="hero-title">Muneer Ahmad Dar</h1>
+            <div class="typing-container">
+                <span id="typing-text"></span><span class="typing-cursor">|</span>
+            </div>
+            
+            <!-- EXPLICIT BEST ACHIEVEMENT HIGHLIGHT -->
+            <div class="achievement-highlight">
+                <h4>Featured Achievement</h4>
+                <p>Built a semantic resume-job matcher using Sentence Transformers achieving an 82%+ semantic match accuracy on test data, effectively optimizing retrieval performance over traditional keyword-based systems.</p>
+            </div>
+
+            <!-- DOWNLOAD RESUME BUTTON (MOCK ACTION ALIGNED TO INSTRUCTION) -->
+            <a href="mailto:abrard855@gmail.com?subject=Resume%20Request" class="hero-btn">Contact / Request Resume</a>
+        </div>
+    </section>
+
+    <!-- ABOUT / SUMMARY SECTION -->
+    <section id="about">
+        <h2 class="section-title">Professional Summary</h2>
+        <div class="summary-box fade-in-element">
+            <p>Aspiring <strong>AI/NLP Engineer</strong> with hands-on experience building end-to-end machine learning and NLP applications. Skilled in semantic search, transformer embeddings, and deployment of AI systems. Pursuing Advanced Certification in AI and ML from IIT Guwahati (in collaboration with Masai). Strong ability to translate real business problems into data-driven AI solutions - from preprocessing pipelines to deployed Streamlit applications.</p>
+        </div>
+    </section>
+
+    <!-- SKILLS SECTION WITH PROGRESS BARS -->
+    <section id="skills">
+        <h2 class="section-title">Technical Expertise</h2>
+        <div class="skills-grid">
+            
+            <!-- CATEGORY 1 -->
+            <div class="skill-category fade-in-element">
+                <h3>AI & Natural Language Processing</h3>
+                <div class="skill-item">
+                    <div class="skill-info"><span>NLP & Text Preprocessing</span><span>90%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="90%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>Semantic Search & Sentence Transformers</span><span>88%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="88%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>RNN, LSTM & Attention Mechanisms</span><span>80%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="80%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>spaCy & HuggingFace Transformers</span><span>85%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="85%"></div></div>
+                </div>
+            </div>
+
+            <!-- CATEGORY 2 -->
+            <div class="skill-category fade-in-element">
+                <h3>Machine & Deep Learning</h3>
+                <div class="skill-item">
+                    <div class="skill-info"><span>Regression, Classification & Clustering</span><span>88%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="88%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>PyTorch & Neural Networks</span><span>82%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="82%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>LLM Pipelines & Multi-head Attention</span><span>80%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="80%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>Feature Engineering & Imbalanced Data Handling</span><span>85%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="85%"></div></div>
+                </div>
+            </div>
+
+            <!-- CATEGORY 3 -->
+            <div class="skill-category fade-in-element">
+                <h3>Core Engineering & Analytics</h3>
+                <div class="skill-item">
+                    <div class="skill-info"><span>Python & SQL</span><span>90%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="90%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>Streamlit & Web Deployment</span><span>85%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="85%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>Tableau Analytics & KPI Dashboards</span><span>80%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="80%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-info"><span>Git, GitHub & EDA</span><span>85%</span></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" data-progress="85%"></div></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION WITH HOVER EFFECTS -->
+    <section id="projects">
+        <h2 class="section-title">Selected Projects</h2>
+        <div class="projects-grid">
+            
+            <!-- PROJECT 1 -->
+            <div class="project-card fade-in-element">
+                <div>
+                    <div class="project-header">
+                        <h3 class="project-title">AI Resume Analyzer</h3>
+                        <span class="project-tag">NLP / Streamlit</span>
+                    </div>
+                    <div class="project-date">Jan 2025 - Present</div>
+                    <ul class="project-bullets">
+                        <li>Built semantic resume-job matcher using Sentence Transformers and cosine similarity - understands context, not just keywords, solving a core flaw in traditional ATS systems.</li>
+                        <li>Developed end-to-end NLP pipeline: PDF parsing, text preprocessing, skill extraction, embedding generation, similarity scoring, and recruiter verdict generation.</li>
+                        <li>Deployed as interactive Streamlit web app with skill gap visualization, matched/missing skills charts, and personalized learning recommendations.</li>
+                        <li>Achieved 82%+ semantic match accuracy on test resumes vs job descriptions using transformer-based retrieval.</li>
+                    </ul>
+                </div>
+                <a href="https://github.com/muneer-ahmad10/Resume-Analyzer" class="project-link" target="_blank">View GitHub Repository →</a>
+            </div>
+
+            <!-- PROJECT 2 -->
+            <div class="project-card fade-in-element">
+                <div>
+                    <div class="project-header">
+                        <h3 class="project-title">NLP Learning Journey</h3>
+                        <span class="project-tag">Transformers / LLMs</span>
+                    </div>
+                    <div class="project-date">2025 - Ongoing</div>
+                    <ul class="project-bullets">
+                        <li>Documented 13+ day structured NLP study covering tokenization, TF-IDF, RNN, LSTM, Attention, Transformers, LLM pipelines, and Multi-head Attention with 50+ commits.</li>
+                        <li>Built a Mini GPT from scratch using transformer architecture and implemented a news text classifier as applied practice.</li>
+                    </ul>
+                </div>
+                <a href="https://github.com/muneer-ahmad10/Natural-Language-processing" class="project-link" target="_blank">View GitHub Repository →</a>
+            </div>
+
+            <!-- PROJECT 3 -->
+            <div class="project-card fade-in-element">
+                <div>
+                    <div class="project-header">
+                        <h3 class="project-title">Customer Churn Prediction</h3>
+                        <span class="project-tag">Machine Learning</span>
+                    </div>
+                    <div class="project-date">2024</div>
+                    <ul class="project-bullets">
+                        <li>Built and compared classification models: Logistic Regression, Random Forest, and Gradient Boosting to predict customer churn from behavioral data.</li>
+                        <li>Handled class imbalance using class weighting and threshold tuning, improving recall from 0.49 to 0.60 - catching 22% more at-risk customers.</li>
+                        <li>Evaluated using precision, recall, F1-score, confusion matrix, and ROC-AUC; Gradient Boosting delivered best overall F1 of 0.65.</li>
+                    </ul>
+                </div>
+                <a href="https://github.com/muneer-ahmad10/Customer-Churn-Prediction" class="project-link" target="_blank">View GitHub Repository →</a>
+            </div>
+
+            <!-- PROJECT 4 -->
+            <div class="project-card fade-in-element">
+                <div>
+                    <div class="project-header">
+                        <h3 class="project-title">Customer Segmentation</h3>
+                        <span class="project-tag">Unsupervised Learning</span>
+                    </div>
+                    <div class="project-date">2024</div>
+                    <ul class="project-bullets">
+                        <li>Performed EDA and customer-level feature engineering on retail transaction data to prepare clustering-ready features.</li>
+                        <li>Applied K-Means clustering with Elbow Method and Silhouette Score to identify optimal segments; discovered 3 distinct customer profiles.</li>
+                        <li>Derived actionable business strategies per segment: loyalty upsell, premium retention, and trend-based targeted campaigns.</li>
+                    </ul>
+                </div>
+                <a href="https://github.com/muneer-ahmad10/Customer-Segmentation" class="project-link" target="_blank">View GitHub Repository →</a>
+            </div>
+
+            <!-- PROJECT 5 -->
+            <div class="project-card fade-in-element">
+                <div>
+                    <div class="project-header">
+                        <h3 class="project-title">Sales Analytics Dashboard</h3>
+                        <span class="project-tag">Python / SQL / Tableau</span>
+                    </div>
+                    <div class="project-date">2024</div>
+                    <ul class="project-bullets">
+                        <li>Analyzed 9,800+ retail transaction records using Python and SQL - performed data cleaning, EDA, aggregation, and trend analysis.</li>
+                        <li>Built interactive Tableau dashboard with revenue KPIs, regional filters, product performance breakdown, and monthly trend charts.</li>
+                    </ul>
+                </div>
+                <a href="https://github.com/muneer-ahmad10/Sales-Analytics" class="project-link" target="_blank">View GitHub Repository →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- EDUCATION & CERTIFICATIONS -->
+    <section id="education">
+        <div class="edu-cert-container">
+            
+            <!-- EDUCATION COLUMN -->
+            <div>
+                <h2 class="section-title">Education</h2>
+                
+                <div class="timeline-item fade-in-element">
+                    <span class="timeline-badge">Mar 2025 - Jun 2026 | Ongoing</span>
+                    <h3 class="timeline-title">Advanced Certification in Artificial Intelligence and Machine Learning</h3>
+                    <div class="timeline-subtitle">Indian Institute of Technology (IIT) Guwahati x Masai School</div>
+                    <p class="timeline-desc">Credit-linked program covering ML, DL, NLP, LLMs, and Generative AI.</p>
+                </div>
+
+                <div class="timeline-item fade-in-element">
+                    <span class="timeline-badge">Jun 2022 - Nov 2025</span>
+                    <h3 class="timeline-title">Bachelor of Computer Applications (BCA)</h3>
+                    <div class="timeline-subtitle">Islamia College of Science and Commerce, Srinagar</div>
+                    <p class="timeline-desc">Grade: 7.3 | Relevant coursework: Data Structures, DBMS, Programming, Computer Networks.</p>
+                </div>
+            </div>
+
+            <!-- CERTIFICATIONS COLUMN -->
+            <div>
+                <h2 class="section-title">Certifications</h2>
+                <div class="cert-list">
+                    <div class="cert-card fade-in-element"><span class="cert-name">AI and Machine Learning Program</span><span class="cert-issuer">IIT Guwahati x Masai</span></div>
+                    <div class="cert-card fade-in-element"><span class="cert-name">Data Analytics Job Simulation</span><span class="cert-issuer">Deloitte (Forage) (2024)</span></div>
+                    <div class="cert-card fade-in-element"><span class="cert-name">Microsoft Azure Essentials</span><span class="cert-issuer">Microsoft (2026)</span></div>
+                    <div class="cert-card fade-in-element"><span class="cert-name">Big Data 101</span><span class="cert-issuer">IBM SkillsBuild (2026)</span></div>
+                    <div class="cert-card fade-in-element"><span class="cert-name">Data Fundamentals</span><span class="cert-issuer">IBM (2026)</span></div>
+                    <div class="cert-card fade-in-element"><span class="cert-name">Statistics Foundations 1</span><span class="cert-issuer">LinkedIn Learning (2026)</span></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER WITH STRIPPED DOWN CONTACT LINKS (NO PHONE / NO LOCATION) -->
+    <footer>
+        <div class="footer-socials">
+            <a href="https://linkedin.com/in/muneerahmad-826363267" target="_blank">LinkedIn</a>
+            <a href="https://github.com/muneer-ahmad10" target="_blank">GitHub</a>
+            <a href="https://public.tableau.com/app/profile/muneer.ahmad3580" target="_blank">Tableau</a>
+        </div>
+        <div class="footer-text">
+            &copy; 2026 Muneer Ahmad Dar. Built strictly for professional validation. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT ENGINE -->
+    <script>
+        // 1. TYPING EFFECT FOR HERO SECTION
+        const roles = [
+            "AI / NLP Engineer",
+            "Machine Learning Engineer",
+            "Data Scientist",
+            "Data Analyst"
+        ];
+        let roleIndex = 0;
+        let charIndex = 0;
+        let currentText = "";
+        let isDeleting = false;
+        const typingSpeed = 100;
+        const erasingSpeed = 50;
+        const newTextDelay = 2000; 
+        const typingTarget = document.getElementById("typing-text");
+
+        function type() {
+            if (roleIndex >= roles.length) roleIndex = 0;
+            currentText = roles[roleIndex];
+
+            if (isDeleting) {
+                typingTarget.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingTarget.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentText.length) {
+                setTimeout(() => isDeleting = true, newTextDelay);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex++;
+            }
+            
+            setTimeout(type, isDeleting ? erasingSpeed : typingSpeed);
+        }
+        document.addEventListener("DOMContentLoaded", () => setTimeout(type, 500));
+
+
+        // 2. SCROLL INDICATOR PROGRESS BAR
+        window.addEventListener("scroll", () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+        });
+
+
+        // 3. SCROLL REVEAL INTERSECTION OBSERVER (Fade up & animate skill progress bars)
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    
+                    // If the entry contains progress bars, animate them natively
+                    const progressBars = entry.target.querySelectorAll(".progress-bar-fill");
+                    progressBars.forEach(bar => {
+                        const targetProgress = bar.getAttribute("data-progress");
+                        bar.style.width = targetProgress;
+                    });
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll(".fade-in-element").forEach(el => {
+            observer.observe(el);
+        });
+
+
+        // 4. NEURAL NETWORK / PARTICLE CANVAS ANIMATION
+        const canvas = document.getElementById("canvas-bg");
+        const ctx = canvas.getContext("2d");
+
+        let particles = [];
+        const particleCount = 60;
+        const connectionDistance = 120;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.radius = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+                if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(168, 85, 247, 0.4)";
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        const opacity = 1 - (distance / connectionDistance);
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.15})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
+</body>
+</html>
